@@ -48,7 +48,7 @@ changelog:
 # Homebrews
 brews:
   - name: cutos
-    github:
+    tap:
       owner: cjp2600
       name: homebrew-cutos
     commit_author:
