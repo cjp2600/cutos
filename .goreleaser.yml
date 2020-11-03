@@ -1,0 +1,61 @@
+project_name: cutos
+before:
+  hooks:
+    - go mod download
+release:
+  prerelease: false
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      # - 386
+      - amd64
+      - arm64
+      - arm
+      - ppc64le
+    goarm:
+      - 7
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      bit: Arm
+      bitv6: Arm6
+      bitv7: Arm7
+      # 386: i386
+      amd64: x86_64
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+# Homebrews
+brews:
+  - name: cutos
+    github:
+      owner: cjp2600
+      name: homebrew-cutos
+    commit_author:
+      name: cjp2600
+      email: icjp2600@gmail.com
+    folder: Formula
+    homepage: https://github.com/cjp2600/cutos/
+    description: The easiest way to write OpenAPI 3 documentation from copying curl
+    test: |
+      system "cutos version"
