@@ -1,6 +1,6 @@
 # Cutos - (Curl to Swagger) 
 
-Cutos provides a terminal UI for writing OpenAP3 and documentation with the easiest trim by copying сurl queries and json responses.
+Cutos provides a terminal UI for writing OpenAPI3 and documentation with the easiest trim by copying сurl queries and json responses.
 The project is in the early alpha version and is not a candidate for the main developer installation.
 The project is a weekend project and was created exclusively to meet the needs of the author.
 
