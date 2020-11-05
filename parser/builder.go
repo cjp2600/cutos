@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"github.com/cjp2600/cutos/config"
 	"github.com/cjp2600/cutos/log"
 	"github.com/cjp2600/cutos/wizard"
 	"github.com/getkin/kin-openapi/openapi3"
@@ -129,19 +130,21 @@ func (b *Builder) BuildPathMethod() *openapi3.Swagger {
 func (b *Builder) setHeaders(path *Path) {
 	if len(path.Headers) > 0 {
 		for header, value := range path.Headers {
-			b.sw.Paths[path.TemplatePath].Parameters = append(b.sw.Paths[path.TemplatePath].Parameters, &openapi3.ParameterRef{
-				Value: &openapi3.Parameter{
-					Name:    header,
-					In:      "header",
-					Example: value,
-					Schema: &openapi3.SchemaRef{
-						Value: &openapi3.Schema{
-							Type:   "string",
-							Format: "string",
+			if !config.IsSkippedHeader(header) {
+				b.sw.Paths[path.TemplatePath].Parameters = append(b.sw.Paths[path.TemplatePath].Parameters, &openapi3.ParameterRef{
+					Value: &openapi3.Parameter{
+						Name:    header,
+						In:      "header",
+						Example: value,
+						Schema: &openapi3.SchemaRef{
+							Value: &openapi3.Schema{
+								Type:   "string",
+								Format: "string",
+							},
 						},
 					},
-				},
-			})
+				})
+			}
 		}
 	}
 }
@@ -156,7 +159,7 @@ func (b *Builder) setQueryParams(path *Path) {
 					Example: value.Example,
 					Schema: &openapi3.SchemaRef{
 						Value: &openapi3.Schema{
-							Type:   value.varType,
+							Type: value.varType,
 						},
 					},
 				},
@@ -247,7 +250,7 @@ func (b *Builder) registerRequestBody(requestApiID string, path *Path) {
 		Ref: "#/components/requestBodies/" + requestApiID,
 	}
 	requestOperation := &openapi3.Operation{
-		Tags: []string{b.source.Tag},
+		Tags:        []string{b.source.Tag},
 		RequestBody: rb,
 	}
 	if strings.EqualFold(path.Method, http.MethodGet) {

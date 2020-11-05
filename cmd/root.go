@@ -15,7 +15,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "cutos",
 	Short: "Create OpenAPI files from curl scheme",
-	Long: `A utility to help developers compile OpenAPI documentation using the CURL request scheme.`,
+	Long:  `A utility to help developers compile OpenAPI documentation using the CURL request scheme.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -28,8 +28,9 @@ func Execute() {
 }
 
 func init() {
-	// disable .cutos config
-	// cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig)
+
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cutos.yaml)")
 }
 
 // initConfig reads in config file and ENV variables if set.

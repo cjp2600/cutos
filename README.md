@@ -11,6 +11,10 @@ The project is a weekend project and was created exclusively to meet the needs o
 cutos is available on Linux, macOS and Windows platforms.
 
 * Binaries for Linux, Windows and Mac are available as tarballs in the [release](https://github.com/cjp2600/cutos/releases) page.
+* Use `go get` to install the latest version of the tools. This command will install the cutos with dependencies:
+```shell
+go get github.com/cjp2600/cutos
+```                                                           
 
 ---
 

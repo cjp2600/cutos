@@ -1,0 +1,17 @@
+#
+# Basic application settings
+#
+application_settings:
+
+  # List of headers params to be skipped
+  skipped_headers:
+    - authority
+    - user-agent
+    - content-type
+    - origin
+    - sec-fetch-site
+    - sec-fetch-mode
+    - sec-fetch-dest
+    - referer
+
+

@@ -52,7 +52,7 @@ brews:
       owner: cjp2600
       name: homebrew-cutos
     commit_author:
-      name: cjp2600
+      name: Stanislav Semenov
       email: icjp2600@gmail.com
     folder: Formula
     homepage: https://github.com/cjp2600/cutos/
