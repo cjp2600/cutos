@@ -11,7 +11,7 @@ import (
 
 type Request struct {
 	Description       string
-	Tag       string
+	Tag               string
 	Request           string
 	RequestValidation func(input string) error
 	Response          string

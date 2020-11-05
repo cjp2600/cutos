@@ -21,8 +21,8 @@ func InitializationCmd(cmd *cobra.Command, args []string) error {
 	fileName := strings.ToLower(strings.Trim(args[0], ""))
 
 	// common wizard
-	w := wizard.NewInfo(new(openapi3.Info))
-	w.SetTitle(true).SetVersion(true).SetDescription().SetTermsOfService().
+	w := wizard.NewInfo(new(openapi3.Info), openapi3.Servers{})
+	w.SetTitle(true).SetVersion(true).SetBaseURL().SetDescription().SetTermsOfService().
 		SetAuthorName().SetAuthorEmail().SetAuthorURL().
 		SetLicenseName().SetLicenseURL()
 
@@ -49,9 +49,10 @@ func InitializationCmd(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func BuildSwagger(w *wizard.Info) *openapi3.Swagger{
+func BuildSwagger(w *wizard.Info) *openapi3.Swagger {
 	return &openapi3.Swagger{
 		OpenAPI: "3.0.0",
-		Info: w.GetMeta(),
+		Info:    w.GetMeta(),
+		Servers: w.GetServers(),
 	}
 }

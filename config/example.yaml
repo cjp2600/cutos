@@ -5,6 +5,7 @@ application_settings:
 
   # List of headers params to be skipped
   skipped_headers:
+    - accept
     - authority
     - user-agent
     - content-type
@@ -13,5 +14,3 @@ application_settings:
     - sec-fetch-mode
     - sec-fetch-dest
     - referer
-
-

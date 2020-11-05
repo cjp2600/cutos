@@ -26,9 +26,9 @@ func BasicCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	w := wizard.NewInfo(sw.Info)
-	w.SetTitle(false).
-		SetVersion(false).
+	w := wizard.NewInfo(sw.Info, nil)
+	w.SetTitle(true).
+		SetVersion(true).
 		SetDescription().
 		SetTermsOfService().
 		SetAuthorName().SetAuthorEmail().SetAuthorURL().

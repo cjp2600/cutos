@@ -8,11 +8,12 @@ import (
 )
 
 type Info struct {
-	meta *openapi3.Info
+	meta   *openapi3.Info
+	server openapi3.Servers
 }
 
-func NewInfo(meta *openapi3.Info) *Info {
-	return &Info{meta: meta}
+func NewInfo(meta *openapi3.Info, server openapi3.Servers) *Info {
+	return &Info{meta: meta, server: server}
 }
 
 // requiredField
@@ -33,7 +34,7 @@ func (w *Info) SetTitle(isRequired bool) *Info {
 		title = title + " (" + w.meta.Title + ")"
 	}
 	prompt := promptui.Prompt{
-		Label:    title,
+		Label: title,
 	}
 	if isRequired {
 		prompt.Validate = w.requiredField()
@@ -104,7 +105,7 @@ func (w *Info) SetAuthorURL() *Info {
 		title = title + " (" + w.meta.Contact.URL + ")"
 	}
 	prompt := promptui.Prompt{
-		Label:title,
+		Label: title,
 	}
 	result, err := prompt.Run()
 	if err != nil {
@@ -162,13 +163,29 @@ func (w *Info) SetLicenseURL() *Info {
 }
 
 // SetVersion
+func (w *Info) SetBaseURL() *Info {
+	prompt := promptui.Prompt{
+		Label:    "Set API URL",
+		Validate: w.requiredField(),
+	}
+	result, err := prompt.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if len(result) > 0 {
+		w.server = openapi3.Servers{{URL: result}}
+	}
+	return w
+}
+
+// SetVersion
 func (w *Info) SetVersion(isRequired bool) *Info {
 	title := "Version"
 	if len(w.meta.Version) > 0 {
 		title = title + " (" + w.meta.Version + ")"
 	}
 	prompt := promptui.Prompt{
-		Label:    title,
+		Label: title,
 	}
 	if isRequired {
 		prompt.Validate = w.requiredField()
@@ -223,4 +240,8 @@ func (w *Info) SetTermsOfService() *Info {
 
 func (w *Info) GetMeta() *openapi3.Info {
 	return w.meta
+}
+
+func (w *Info) GetServers() openapi3.Servers {
+	return w.server
 }

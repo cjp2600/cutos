@@ -46,10 +46,9 @@ func ConvertToSchema(source interface{}, rootKey string) map[string]*openapi3.Sc
 			case uint8:
 				sub = &openapi3.SchemaRef{
 					Value: &openapi3.Schema{
-						Type:    "string",
-						Format:  "byte",
-						Title:   rootKey,
-						Example: v,
+						Type:   "string",
+						Format: "byte",
+						Title:  rootKey,
 					},
 				}
 				mp[rootKey] = sub
@@ -84,9 +83,8 @@ func ConvertToSchema(source interface{}, rootKey string) map[string]*openapi3.Sc
 		}
 		mp[rootKey] = &openapi3.SchemaRef{
 			Value: &openapi3.Schema{
-				Type:    "object",
-				Title:   rootKey,
-				Example: v,
+				Type:       "object",
+				Title:      rootKey,
 				Properties: sub,
 			},
 		}
