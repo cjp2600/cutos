@@ -31,6 +31,7 @@ If the file has already been created or was already created, you can add a new p
 cutos add curl swagger.json
 ```
 > The utility will open a new listener of your clipboard to create a patch.
+> You can easily use programs that allow you to export to the curl format. Such as [Insomnia](https://insomnia.rest/download/), [Postman](https://www.postman.com/) or Browser
 
 ## Configuration
 By default the utility looks for the configuration file in this path default is **$HOME/.cutos.yaml**
