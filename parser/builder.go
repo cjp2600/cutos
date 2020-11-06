@@ -63,6 +63,9 @@ func (b *Builder) BuildPathMethod() *openapi3.Swagger {
 		}
 	}
 
+	// set server host
+	b.setServerHost(path)
+
 	// set body ref by requestApiID
 	b.registerRequestBody(requestApiID, path)
 
@@ -297,5 +300,25 @@ func (b *Builder) pathInitialization(path *Path) {
 	}
 	if _, ok := b.sw.Paths[path.TemplatePath]; !ok {
 		b.sw.Paths[path.TemplatePath] = new(openapi3.PathItem)
+	}
+}
+
+// setServerHost
+func (b *Builder) setServerHost(path *Path) {
+	check := func(host string, servers openapi3.Servers) bool {
+		for i := 0; i < len(servers); i++ {
+			if strings.EqualFold(servers[i].URL, host) {
+				return true
+			}
+		}
+		return false
+	}
+	if b.sw.Servers == nil {
+		b.sw.Servers = openapi3.Servers{}
+	}
+	if len(path.URL.Host) > 0 {
+		if !check(path.URL.Host, b.sw.Servers) {
+			b.sw.Servers = append(b.sw.Servers, &openapi3.Server{URL: path.URL.Host})
+		}
 	}
 }

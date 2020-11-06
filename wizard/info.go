@@ -165,8 +165,7 @@ func (w *Info) SetLicenseURL() *Info {
 // SetVersion
 func (w *Info) SetBaseURL() *Info {
 	prompt := promptui.Prompt{
-		Label:    "Set API URL",
-		Validate: w.requiredField(),
+		Label: "Set API URL",
 	}
 	result, err := prompt.Run()
 	if err != nil {
