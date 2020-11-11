@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"github.com/bxcodec/faker/v3"
 	"regexp"
 	"strings"
 )
@@ -25,17 +26,26 @@ func isEmailValid(e string) bool {
 func Clean(field, content string) string {
 	switch strings.ToLower(field) {
 	case "phone":
-		runes := bytes.Runes([]byte(content))
-		return string(runes[:6]) + "****"
+		return faker.Phonenumber()
+	case "url":
+		return faker.URL()
+	case "name":
+		return faker.Name()
+	case "lastname":
+		return faker.LastName()
+	case "firstname":
+		return faker.FirstName()
+	case "secondname":
+		return faker.LastName()
 	case "login":
 		if isEmailValid(content) {
-			return "example@example.com"
+			return faker.Email()
 		}
 		return "userLogin"
 	case "email":
-		return "example@example.com"
+		return faker.Email()
 	case "password", "pwd", "pswrd":
-		return "SECReEtPa$$WORD"
+		return faker.Password()
 	default:
 		return PreviewContent(content, 80)
 	}
