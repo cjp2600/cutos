@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/cjp2600/cutos/log"
+	"github.com/cjp2600/cutos/utils"
 	"github.com/cjp2600/cutos/wizard"
 	"github.com/getkin/kin-openapi/openapi3"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"os"
@@ -34,8 +34,7 @@ func BasicCmd(cmd *cobra.Command, args []string) error {
 		SetAuthorName().SetAuthorEmail().SetAuthorURL().
 		SetLicenseName().SetLicenseURL()
 
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
-	b, err := json.Marshal(sw)
+	b, err := utils.Marshal(fileName, sw)
 	if err != nil {
 		return err
 	}

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/cjp2600/cutos/log"
+	"github.com/cjp2600/cutos/utils"
 	"github.com/cjp2600/cutos/wizard"
 	"github.com/getkin/kin-openapi/openapi3"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"os"
@@ -27,8 +27,8 @@ func InitializationCmd(cmd *cobra.Command, args []string) error {
 		SetLicenseName().SetLicenseURL()
 
 	swagger := BuildSwagger(w)
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
-	b, err := json.Marshal(swagger)
+
+	b, err := utils.Marshal(fileName, swagger)
 	if err != nil {
 		return err
 	}

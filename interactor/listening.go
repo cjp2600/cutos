@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/cjp2600/cutos/log"
 	"github.com/cjp2600/cutos/parser"
+	"github.com/cjp2600/cutos/utils"
 	"github.com/cjp2600/cutos/wizard"
 	"github.com/getkin/kin-openapi/openapi3"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -46,8 +46,7 @@ func ListeningCmd(cmd *cobra.Command, args []string, parserType parser.Type) err
 	// update and parse
 	updatedSw := newParser.BuildPathMethod()
 
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
-	b, err := json.Marshal(updatedSw)
+	b, err := utils.Marshal(fileName, updatedSw)
 	if err != nil {
 		return err
 	}
