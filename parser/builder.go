@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/cjp2600/cutos/config"
 	"github.com/cjp2600/cutos/log"
+	"github.com/cjp2600/cutos/utils"
 	"github.com/cjp2600/cutos/wizard"
 	"github.com/getkin/kin-openapi/openapi3"
 	jsoniter "github.com/json-iterator/go"
@@ -142,7 +143,7 @@ func (b *Builder) setHeaders(path *Path) {
 					Value: &openapi3.Parameter{
 						Name:    header,
 						In:      "header",
-						Example: value,
+						Example: utils.Clean(header, value),
 						Schema: &openapi3.SchemaRef{
 							Value: &openapi3.Schema{
 								Type:   "string",
@@ -163,7 +164,7 @@ func (b *Builder) setQueryParams(path *Path) {
 				Value: &openapi3.Parameter{
 					Name:    value.name,
 					In:      "query",
-					Example: value.Example,
+					Example: utils.Clean(value.name, value.Example),
 					Schema: &openapi3.SchemaRef{
 						Value: &openapi3.Schema{
 							Type: value.varType,
@@ -182,6 +183,7 @@ func (b *Builder) setUrlPathVariables(path *Path) {
 				Value: &openapi3.Parameter{
 					Name:        vr.name,
 					In:          "path",
+					Example:     utils.Clean(vr.name, vr.Example),
 					Description: vr.description,
 					Required:    true,
 					Schema: &openapi3.SchemaRef{
