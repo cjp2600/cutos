@@ -96,17 +96,21 @@ func (b *Builder) BuildPathMethod() *openapi3.Swagger {
 
 	if len(path.SourceRequest) > 0 {
 		nsr := openapi3.NewSchemaRef("#/components/schemas/"+requestApiID, nil)
+		description := path.TemplatePath + " request body"
 		b.sw.Components.RequestBodies[requestApiID] = &openapi3.RequestBodyRef{
 			Value: &openapi3.RequestBody{
-				Content: openapi3.NewContentWithJSONSchemaRef(nsr),
+				Description: description,
+				Content:     openapi3.NewContentWithJSONSchemaRef(nsr),
 			},
 		}
 	}
 	if len(b.source.Response) > 0 {
 		nsr := openapi3.NewSchemaRef("#/components/schemas/"+responseApiID, nil)
+		description := path.TemplatePath + " response"
 		b.sw.Components.Responses[responseApiID] = &openapi3.ResponseRef{
 			Value: &openapi3.Response{
-				Content: openapi3.NewContentWithJSONSchemaRef(nsr),
+				Description: &description,
+				Content:     openapi3.NewContentWithJSONSchemaRef(nsr),
 			},
 		}
 	}
