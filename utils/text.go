@@ -27,6 +27,8 @@ func Clean(field, content string) string {
 	switch strings.ToLower(field) {
 	case "phone":
 		return faker.Phonenumber()
+	case "productName":
+		return faker.Name()
 	case "url":
 		return faker.URL()
 	case "name":
