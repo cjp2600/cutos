@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"github.com/cjp2600/cutos/utils"
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -90,12 +91,16 @@ func ConvertToSchema(source interface{}, rootKey string) map[string]*openapi3.Sc
 		}
 		return mp
 	default:
+		var ex = v
+		if vs, ok := v.(string); ok {
+			ex = utils.Clean(rootKey, vs)
+		}
 		mp := make(map[string]*openapi3.SchemaRef)
 		mp[rootKey] = &openapi3.SchemaRef{
 			Value: &openapi3.Schema{
 				Type:    "string",
 				Title:   rootKey,
-				Example: v,
+				Example: ex,
 			},
 		}
 		return mp
