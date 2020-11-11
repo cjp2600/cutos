@@ -27,12 +27,10 @@ func Clean(field, content string) string {
 	switch strings.ToLower(field) {
 	case "phone":
 		return faker.Phonenumber()
-	case "productName":
+	case "productname":
 		return faker.Name()
 	case "url":
 		return faker.URL()
-	case "name":
-		return faker.Name()
 	case "lastname":
 		return faker.LastName()
 	case "firstname":
