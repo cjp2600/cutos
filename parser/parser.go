@@ -26,6 +26,14 @@ type Path struct {
 	ParseRequest   map[string]interface{}
 }
 
+// HasAuthorization has auth check
+func (path *Path) HasAuthorization() bool {
+	if _, ok := path.Headers["authorization"]; ok {
+		return true
+	}
+	return false
+}
+
 // Variable structure for determining path or query variables
 type Variable struct {
 	name        string

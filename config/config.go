@@ -22,6 +22,10 @@ func skippedHeadersMap() map[string]bool {
 func IsSkippedHeader(item string) bool {
 	item = strings.Trim(strings.ToLower(item), " ")
 	hm := skippedHeadersMap()
+
+	// skip auth method
+	hm["authorization"] = true
+
 	if _, ok := hm[item]; ok {
 		return true
 	}

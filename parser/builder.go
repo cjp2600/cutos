@@ -116,6 +116,23 @@ func (b *Builder) BuildPathMethod() *openapi3.Swagger {
 		}
 	}
 
+	if path.HasAuthorization() {
+		// Security scheme
+		if b.sw.Components.SecuritySchemes == nil {
+			b.sw.Components.SecuritySchemes = make(map[string]*openapi3.SecuritySchemeRef)
+		}
+		b.sw.Components.SecuritySchemes["bearerAuth"] = &openapi3.SecuritySchemeRef{
+			Value: &openapi3.SecurityScheme{
+				ExtensionProps: openapi3.ExtensionProps{},
+				Type:           "http",
+				Name:           "bearerAuth",
+				Scheme:         "bearer",
+				BearerFormat:   "JWT",
+			},
+		}
+		b.securityRequirements(path)
+	}
+
 	if len(path.ParseRequest) > 0 {
 		node := ConvertToSchema(path.ParseRequest, requestApiID)
 		b.sw.Components.Schemas[requestApiID] = node[requestApiID]
@@ -200,6 +217,27 @@ func (b *Builder) setUrlPathVariables(path *Path) {
 
 func (b *Builder) uniqueSchemeName(prefix string, path *Path) string {
 	return strings.Title(prefix) + path.UniqueName
+}
+
+func (b *Builder) securityRequirements(path *Path) {
+	var mp = make(map[string][]string)
+	mp["bearerAuth"] = []string{}
+
+	if strings.EqualFold(path.Method, http.MethodGet) {
+		b.sw.Paths[path.TemplatePath].Get.Security = &openapi3.SecurityRequirements{mp}
+	}
+	if strings.EqualFold(path.Method, http.MethodPost) {
+		b.sw.Paths[path.TemplatePath].Post.Security = &openapi3.SecurityRequirements{mp}
+	}
+	if strings.EqualFold(path.Method, http.MethodDelete) {
+		b.sw.Paths[path.TemplatePath].Delete.Security = &openapi3.SecurityRequirements{mp}
+	}
+	if strings.EqualFold(path.Method, http.MethodPatch) {
+		b.sw.Paths[path.TemplatePath].Patch.Security = &openapi3.SecurityRequirements{mp}
+	}
+	if strings.EqualFold(path.Method, http.MethodPut) {
+		b.sw.Paths[path.TemplatePath].Put.Security = &openapi3.SecurityRequirements{mp}
+	}
 }
 
 func (b *Builder) registerResponse(responseApiID string, path *Path) {
