@@ -2,18 +2,24 @@ package parser
 
 import (
 	"errors"
-	"github.com/gertd/go-pluralize"
-	"github.com/google/shlex"
-	jsoniter "github.com/json-iterator/go"
+	"mvdan.cc/xurls/v2"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/gertd/go-pluralize"
+	"github.com/google/shlex"
+	jsoniter "github.com/json-iterator/go"
 )
 
 // Curl structure
 type Curl struct {
 	text string
+}
+
+func (c *Curl) Text() string {
+	return c.text
 }
 
 // NewCurl processing constructor
@@ -220,9 +226,14 @@ func (c *Curl) Parse() (*Path, error) {
 			var nextItem = splitItems[i+1]
 			bItem := strings.ToLower(c.clean(item))
 			if c.isCurlItem(bItem) {
+				rxRelaxed := xurls.Relaxed()
+				findUrl := rxRelaxed.FindString(c.Text())
+				if findUrl != "" {
+					nextItem = findUrl
+				}
+
 				setUrl = true
-				err := setURL(response, nextItem)
-				if err != nil {
+				if err := setURL(response, nextItem); err != nil {
 					return response, err
 				}
 				response.TemplatePath = c.CreateTemplatePath(response)
@@ -248,6 +259,10 @@ func (c *Curl) Parse() (*Path, error) {
 // isCurlItem
 func (c *Curl) isCurlItem(bItem string) bool {
 	return strings.Contains(bItem, "curl")
+}
+
+func (c *Curl) isLocation(currentItem string) bool {
+	return strings.Contains(currentItem, "--location")
 }
 
 // isHeaderItem

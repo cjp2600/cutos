@@ -1,15 +1,14 @@
 package parser
 
 import (
-	"reflect"
+	"github.com/magiconair/properties/assert"
 	"testing"
 )
 
-
 func TestShlex_Parse(t *testing.T) {
 
-crl := `curl --request POST \
-  --url https://api.example.com/api/v1/products/3e12d388-dd9b-422b-862a-52463ec305f8/structures/23 \
+	crl := `curl --request POST \
+  --url https://api.example.com/api/v1/products/3e12d388-dd9b-422b-862a-52463ec305f8 \
   --header 'accept: application/json, text/plain, */*' \
   --header 'accept-language: en' \
   --header 'authority: api.bookletix.com' \
@@ -23,7 +22,7 @@ crl := `curl --request POST \
   --header 'sec-fetch-site: same-site' \
   --header 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'`
 
-type fields struct {
+	type fields struct {
 		text string
 	}
 	tests := []struct {
@@ -33,17 +32,15 @@ type fields struct {
 		wantErr bool
 	}{
 
-		{ name: "parse", fields: fields{
+		{name: "parse", fields: fields{
 			text: crl,
 		},
-		want: &Path{
-			SourceURL: "https://api.example.com/api/v1/products/3e12d388-dd9b-422b-862a-52463ec305f8",
-			Method: "POST",
-			TemplatePath: "/api/v1/products/{ProductID}",
-		},
-		wantErr: false},
-
-
+			want: &Path{
+				SourceURL:    "https://api.example.com/api/v1/products/3e12d388-dd9b-422b-862a-52463ec305f8",
+				Method:       "POST",
+				TemplatePath: "/api/v1/products/{ProductID}",
+			},
+			wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -55,15 +52,59 @@ type fields struct {
 				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Parse() got = %v, want %v", got, tt.want)
+
+			assert.Equal(t, got.SourceURL, tt.want.SourceURL)
+			assert.Equal(t, got.Method, tt.want.Method)
+			assert.Equal(t, got.TemplatePath, tt.want.TemplatePath)
+		})
+	}
+}
+
+func TestCurl_PostmanStyle(t *testing.T) {
+	crl := `
+curl --location --request POST 'https://api.example.com/api/v1/products/b7fdda2b-4ddb-4cc8-bf38-73d5009a222e/reviews' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTk0NDM0MTAsImlhdCI6MTY1OTQ0MjIxMCwiaXNzIjoidGFiYnkuYWkiLCJjdXN0b21lcl9pZCI6ImY0OWU2ZjIxLTRmOWUtNGMzNi05ZjQ3LTgxMTI4YTNlMmU5ZSJ9.LCCHm0G6pTkPel73MXSby_NpmH_Yh7JgEryRTNKq2Ec' \
+--header 'Content-Type: application/json' \
+--data-raw '{"name":"Stanley"}'`
+
+	type fields struct {
+		text string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		want    *Path
+		wantErr bool
+	}{
+		{name: "parse body", fields: fields{
+			text: crl,
+		},
+			want: &Path{
+				SourceURL:    "https://api.example.com/api/v1/products/b7fdda2b-4ddb-4cc8-bf38-73d5009a222e/reviews",
+				Method:       "POST",
+				TemplatePath: "/api/v1/products/{ProductID}/reviews",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &Curl{
+				text: tt.fields.text,
 			}
+			got, err := s.Parse()
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			assert.Equal(t, got.SourceURL, tt.want.SourceURL)
+			assert.Equal(t, got.Method, tt.want.Method)
+			assert.Equal(t, got.TemplatePath, tt.want.TemplatePath)
 		})
 	}
 }
 
 func TestShlex_BODYParse(t *testing.T) {
-
 	crl := `
 curl 'https://api.example.com/api/v1/products/b7fdda2b-4ddb-4cc8-bf38-73d5009a222e/reviews' \
   -H 'authority: api.pharmaspace.ru' \
@@ -78,8 +119,7 @@ curl 'https://api.example.com/api/v1/products/b7fdda2b-4ddb-4cc8-bf38-73d5009a22
   -H 'accept-language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,zh-CN;q=0.6,zh;q=0.5,de;q=0.4' \
   --compressed`
 
-
-type fields struct {
+	type fields struct {
 		text string
 	}
 	tests := []struct {
@@ -88,15 +128,15 @@ type fields struct {
 		want    *Path
 		wantErr bool
 	}{
-		{ name: "parse body", fields: fields{
+		{name: "parse body", fields: fields{
 			text: crl,
 		},
-		want: &Path{
-			SourceURL: "https://api.example.com/api/v1/products/b7fdda2b-4ddb-4cc8-bf38-73d5009a222e/reviews",
-			Method: "GET",
-			TemplatePath: "/api/v1/products/<ProductID>/reviews",
-		},
-		wantErr: false,
+			want: &Path{
+				SourceURL:    "https://api.example.com/api/v1/products/b7fdda2b-4ddb-4cc8-bf38-73d5009a222e/reviews",
+				Method:       "GET",
+				TemplatePath: "/api/v1/products/{ProductID}/reviews",
+			},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -109,9 +149,9 @@ type fields struct {
 				t.Errorf("Parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Parse() got = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, got.SourceURL, tt.want.SourceURL)
+			assert.Equal(t, got.Method, tt.want.Method)
+			assert.Equal(t, got.TemplatePath, tt.want.TemplatePath)
 		})
 	}
 }
